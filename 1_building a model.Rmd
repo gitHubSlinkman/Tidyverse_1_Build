@@ -1,0 +1,77 @@
+---
+title: "1 Build a model"
+author: "Craig W. Slinkman"
+date: "3/7/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Build a model
+
+## Intriduction
+
+This is my solution to the tidymodel tutorial found  [here](https://www.tidymodels.org/start/models/).  My solution may differ somewhat from the tutorial solution because of my own R coding style. 
+
+## Build a model
+
+### Packages: broom and parsnip
+
+* INTRODUCTION
+* THE SEA URCHINS DATA
+* BUILD AND FIT A MODEL
+* USE A MODEL TO PREDICT
+* MODEL WITH A DIFFERENT ENGINE
+* WHY DOES IT WORK THAT WAY?
+* SESSION INFORMATION
+
+### INTRODUCTION
+
+How do you create a statistical model using tidymodels? In this article, we will walk you through the steps. We start with data for modeling, learn how to specify and train models with different engines using the parsnip package, and understand why these functions are designed this way.
+
+To use code in this article, you will need to install the following packages: **broom.mixed**, **dotwhisker**, **readr**, **rstanarm**, and **tidymodels**.  To use code in this article, you will need to install the following packages: broom.mixed, dotwhisker, readr, rstanarm, and tidymodels.
+
+We load these packages below:
+
+```{r}
+library(tidymodels)  # for the parsnip package, along with the rest of tidymodels
+
+# Helper packages
+library(readr)       # for importing data
+library(broom.mixed) # for converting bayesian models to tidy tibbles
+library(dotwhisker)  # for visualizing regression results
+```
+
+### THE SEA URCHINS DATA
+
+Let’s use the data from [Constable (1993)](https://link.springer.com/article/10.1007/BF00349318)  to explore how three different feeding regimes affect the size of sea urchins over time. The initial size of the sea urchins at the beginning of the experiment probably affects how big they grow as they are fed.
+
+To start, let’s read our urchins data into R, which we’ll do by providing readr::read_csv() with a url where our CSV data is located (“https://tidymodels.org/start/models/urchins.csv”):
+
+```{r}
+# Data were assembled for a tutorial
+# at https://www.flutterbys.com.au/stats/tut/tut7.5a.html
+#
+# Remark:  In this code chunk we
+#  1. Read remotely read the data form the url using the rear_csv() function
+#     in the package readr which is automatically by the package tidymodels.
+#   2.Change the names to be a little more descriptive. 
+#   3. Convert the character variable food_regime to a factor.
+
+urchins <-
+  read_csv("https://tidymodels.org/start/models/urchins.csv") %>%  
+
+    setNames(c("food_regime", "initial_volume", "width")) %>% 
+    mutate(food_regime = factor(food_regime, 
+                                levels = c("Initial", "Low", "High")))
+```
+
+Let’s take a quick look at the data:
+
+```{r}
+urchins            # Display first 10 rows od urchins along with data types
+```
+ 
+ 
