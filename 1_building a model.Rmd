@@ -42,13 +42,14 @@ library(tidymodels)  # for the parsnip package, along with the rest of tidymodel
 library(readr)       # for importing data
 library(broom.mixed) # for converting bayesian models to tidy tibbles
 library(dotwhisker)  # for visualizing regression results
+library(cowplot)     # For cowplot graphics theme.
 ```
 
 ### THE SEA URCHINS DATA
 
 Let’s use the data from [Constable (1993)](https://link.springer.com/article/10.1007/BF00349318)  to explore how three different feeding regimes affect the size of sea urchins over time. The initial size of the sea urchins at the beginning of the experiment probably affects how big they grow as they are fed.
 
-To start, let’s read our urchins data into R, which we’ll do by providing readr::read_csv() with a url where our CSV data is located (“https://tidymodels.org/start/models/urchins.csv”):
+To start, lets read our urchins data into R, which we’ll do by providing readr::read_csv() with a url where our CSV data is located (“https://tidymodels.org/start/models/urchins.csv”):
 
 ```{r}
 # Data were assembled for a tutorial
@@ -71,7 +72,35 @@ urchins <-
 Let’s take a quick look at the data:
 
 ```{r}
-urchins            # Display first 10 rows od urchins along with data types
+urchins            # Display first 10 rows of urchins along with data types
 ```
  
- 
+The urchins data is a tibble. If you are new to tibbles, the best place to start is the tibbles chapter in R for Data Science. For each of the 72 urchins, we know their:
+
+* experimental feeding regime group (food_regime: either Initial, Low, or High),
+* size in milliliters at the start of the experiment (initial_volume), and
+* suture width at the end of the experiment (width). 
+
+As a first step in modeling, its always a good idea to plot the data  We use 
+**ggplot** (loaded by **tidymodels**) to plot the data:
+
+```{r}
+ggplot(urchins,
+       aes(x = initial_volume, 
+           y = width, 
+           group = food_regime, 
+           col = food_regime)) + 
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) +
+  scale_color_viridis_d(option = "plasma", end = .7) +
+  theme_cowplot()
+```
+
+
+**Remark:** Failure to plot and look is statistical malfeasance.
+
+**Remark:** Note that I use the the function **theme_cowplot()** to make my plots look more professional.
+
+We can see that urchins that were larger in volume at the start of the experiment tended to have wider sutures at the end, but the slopes of the lines look different so this effect may depend on the feeding regime condition.
+
+**Remark:** That is we have interaction between the food regeime and the initial volume.
