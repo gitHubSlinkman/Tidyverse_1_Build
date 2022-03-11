@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Build a model
 
-## Intriduction
+## Introduction
 
 This is my solution to the tidymodel tutorial found  [here](https://www.tidymodels.org/start/models/).  My solution may differ somewhat from the tutorial solution because of my own R coding style. 
 
@@ -104,3 +104,46 @@ ggplot(urchins,
 We can see that urchins that were larger in volume at the start of the experiment tended to have wider sutures at the end, but the slopes of the lines look different so this effect may depend on the feeding regime condition.
 
 **Remark:** That is we have interaction between the food regeime and the initial volume.
+
+## Build and fir a model
+
+A standard two-way analysis of variance (ANOVA) model makes sense for this dataset because we have both a continuous predictor and a categorical predictor. Since the slopes appear to be different for at least two of the feeding regimes, lets build a model that allows for two-way interactions. Specifying an R formula with our variables in this way:
+
+```
+width ~ initial_volume * food_regime
+```
+allows our regression model depending on initial volume to have separate slopes and intercepts for each food regime.
+
+For this kind of model, ordinary least squares is a good initial approach. With tidymodels, we start by specifying the functional form of the model that we want using the parsnip package. Since there is a numeric outcome and the model should be linear with slopes and intercepts, the model type is “linear regression”. We can declare this with:
+
+```
+# Linear model specification
+linear_reg()
+```
+That is pretty underwhelming since, on its own, it doesn’t really do much. However, now that the type of model has been specified, a method for fitting or training the model can be stated using the engine. The engine value is often a mash-up of the software that can be used to fit or train the model as well as the estimation method. For example, to use ordinary least squares, we can set the engine to be ##lm##:
+
+```{r}
+linear_reg() %>%             # Linear Regression Model Specification (regression)
+  set_engine("lm")           # Computational engine lm (linear model) 
+```
+ [linear_reg()](https://parsnip.tidymodels.org/reference/linear_reg.html) defines a model that can predict numeric values from predictors using a linear function. This function can fit regression models.
+
+The [documentation page](https://parsnip.tidymodels.org/reference/linear_reg.html) for **linear_reg()** lists the possible engines. We’ll save this model object as
+**lm_mod**.  
+
+```{r}
+lm_mod <-
+  linear_reg() %>%             # Linear Regression Model Specification (regression)
+  set_engine("lm")             #  Computational engine lm (linear model)
+```
+
+From here, the model can be estimated or trained using the **fit()** function:
+
+```{r}
+lm_fit <- 
+  lm_mod %>% 
+  fit(width ~ initial_volume * food_regime, data = urchins)
+lm_fit
+```
+
+ 
