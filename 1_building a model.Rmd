@@ -197,12 +197,12 @@ new_points                                        # Verify prediction data.
 It is also important to communicate the variability, so we also need to find the predicted confidence intervals. If we had used lm() to fit the model directly, a few minutes of reading the documentation page for predict.lm() would explain how to do this. However, if we decide to use a different model to estimate urchin size (spoiler: we will!), it is likely that a completely different syntax would be required.  
 
 ```{r}
-conf_int_pred <-                   # Confidence intervals for predictions
-  predict(lm_fit, 
+conf_int_pred <-                   # Compute confidence intervals for 
+  predict(lm_fit,                  # predictions.    
   new_data = new_points, 
   type = "conf_int")
   
-  conf_int_pred                    # View cinidence intervals                         
+  conf_int_pred                    # View confidence intervals.                         
 ```
 
 
